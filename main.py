@@ -146,8 +146,6 @@ class DisplaySession:
 
         print(self.color_msg(msg, ansi))
 
-
-
     def print(self, msg):
         """
         Prints input message alongside ANSI-color-coded byline.
