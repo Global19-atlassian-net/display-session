@@ -118,11 +118,11 @@ class DisplaySession:
 
         :return: None - Prints fully justified and ANSI-color-coded string.
         """
-        ansi = ansi or self.default_ansi
-        align = (align or self.header_alignment).lower()
+        ansi         = ansi or self.default_ansi
+        align        = (align or self.header_alignment).lower()
         justify_char = justify_char or self.justify_char
         prepared_msg = self.color_msg(self._pad_msg(msg, align), ansi)
-        width = int(self.columns * width)
+        width        = int(self.columns * width)
 
         justified_msg = self._align(msg=prepared_msg, width=width, align=align, justify_char=justify_char)
 
