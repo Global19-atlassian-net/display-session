@@ -155,7 +155,7 @@ class DisplaySession:
         :return: None - Prints ANSI-color-coded byline with any provided functions.
         """
         action_data = self._pad_msg(self.byline_action_delim).join(
-            [self._pad_msg(self.byline)] + [func() for func in self.byline_actions]
+            [self._pad_msg(self.byline)] + [str(func()) for func in self.byline_actions]
         )
         byline = self.color_msg(action_data, self.default_ansi) + ":"
         print(" ".join([byline, str(msg)]))
