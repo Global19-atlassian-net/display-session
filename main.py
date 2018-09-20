@@ -34,6 +34,17 @@ class DisplaySession:
         """
         self.columns, _ = shutil.get_terminal_size()
 
+    @classmethod
+    def show_color_palette(cls):
+        """https://stackoverflow.com/questions/287871/print-in-terminal-with-colors/3332860"""
+        for style in range(8):
+            for fg in range(30, 38):
+                s1 = ''
+                for bg in range(40, 48):
+                    fmt = ';'.join([str(style), str(fg), str(bg)])
+                    s1 += '\x1b[%sm %s \x1b[0m' % (fmt, fmt)
+                print(s1)
+
     @staticmethod
     def color_msg(msg, color):
         """
@@ -139,9 +150,9 @@ class DisplaySession:
 
         :return: None - prints ANSI-colored input string.
         """
-        if status == 1   : ansi = "\033[32m" # green
-        elif status == 0 : ansi = "\033[34m" # blue
-        elif status == -1: ansi = "\033[31m" # red
+        if status == 1   : ansi = "\033[32m"  # green
+        elif status == 0 : ansi = "\033[34m"  # blue
+        elif status == -1: ansi = "\033[31m"  # red
         else             : raise ValueError("Entered number must be -1, 0, or 1")
 
         print(self.color_msg(msg, ansi))
