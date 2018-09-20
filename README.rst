@@ -10,11 +10,9 @@ There are three functions intended to be user-facing:
 
 1. header - print provided message with all other space as the provided justify_char. Serves as easy way to communicate seperate sections within logs.
 
-2. alert - simple print statement that maps numeric arg (-1, 0, 1) to bad, neutral, good. 
-Serves as easy way to communicate sentiment of message.
+2. alert - simple print statement that maps numeric arg (-1, 0, 1) to bad, neutral, good. Serves as easy way to communicate sentiment of message.
 
-3. report - most complicated print statement. proceeds all messages with bylines, and if provided will run all
-provided functions at print time. intended to serve as a sort of heads-up-display for the command line. See example       below.
+3. report - most complicated print statement. proceeds all messages with bylines, and if provided will run all provided functions at print time. intended to serve as a sort of heads-up-display for the command line. See example below.
 
 Simple comparison and examples::
     
