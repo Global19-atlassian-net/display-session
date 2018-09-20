@@ -2,7 +2,7 @@ import shutil
 
 
 __title__ = "display-session"
-__version__ = "1.1"
+__version__ = "1.2"
 __author__ = "Nicholas Lawrence"
 __license__ = "MIT"
 __copyright__ = "Copyright 2018-2019 Nicholas Lawrence"
@@ -27,6 +27,7 @@ class DisplaySession:
         :param default_ansi       : Default color scheme that only formats the byline and byline actions.
         :param header_alignment   : Default header alignment - effects only .header calls.
         :param justify_char       : Char used to justify text passed to .header call.
+        :param columns            : Integer denoting width of the terminal.
         """
 
         self.byline              = byline
@@ -35,20 +36,12 @@ class DisplaySession:
         self.default_ansi        = default_ansi
         self.header_alignment    = header_alignment
         self.justify_char        = justify_char
-
-        self._evaluate_terminal_width()
+        self.columns             = 100  # python 2 has limited support to discerning terminal width
 
         # TODO:
             # progress bars
             # parallelize byline_actions - only in specific cases is this actually not detrimental
             # benchmark compared to regular print
-
-    def _evaluate_terminal_width(self):
-        """
-        Redeclare value of columns attribute for reference in header method. Useful if needing to account for varying
-        terminal widths.
-        """
-        self.columns, _ = shutil.get_terminal_size()
 
     @staticmethod
     def show_color_palette():
