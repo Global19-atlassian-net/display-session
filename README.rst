@@ -7,6 +7,7 @@
 This project stemmed from wanting better looking, more informative, and more engaging command line interfaces.
 
 There are three functions intended to be user-facing:
+
 1. header - print provided message with all other space as the provided justify_char. Serves as easy way to communicate seperate sections within logs.
 
 2. alert - simple print statement that maps numeric arg (-1, 0, 1) to bad, neutral, good. 
