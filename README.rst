@@ -37,4 +37,17 @@ More complicated examples::
      P R O G R A M - John  // 2018-09-19 21:55:29.115387 // 9.1: User successfully logged in.
     >>>display.report('User successfully logged out')
      P R O G R A M - John  // 2018-09-19 21:56:14.560489 // 7.8: User successfully logged out.
+     
+Other capabilities::
+     
+    >>># lets signify to our users that we are entering a new section
+    >>>display.header('BEGINNING LEVEL 2', align='right')
+    ______________________________________________________________________ BEGINNING LEVEL 2
+
+    >>># lets communicate by leveraging ANSI colors - our second arg maps to them in the method.
+    >>>display.alert('This message is good, so it should have a green color', 1)
+    This message is good, so it should have a green color
+    >>>
+    >>>display.alert('This message is bad, so it should have a red color', -1)
+    This message is bad, so it should have a red color
 
