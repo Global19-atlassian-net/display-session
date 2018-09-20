@@ -2,7 +2,7 @@ import shutil
 
 
 __title__ = "display-session"
-__version__ = "1.0"
+__version__ = "1.1"
 __author__ = "Nicholas Lawrence"
 __license__ = "MIT"
 __copyright__ = "Copyright 2018-2019 Nicholas Lawrence"

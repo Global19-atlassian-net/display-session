@@ -27,9 +27,7 @@ setup(
     author=display_session.__author__,
     author_email="nickclawrence@gmail.com",
     py_modules=["display_session"],
-    install_requires=[
-        'shutil'
-    ],
+    install_requires=[],
     classifiers=[
         "Intended Audience :: Developers",
         "Natural Language :: English",
