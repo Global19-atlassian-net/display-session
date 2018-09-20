@@ -34,8 +34,6 @@ class DisplaySession:
         self.byline_actions      = byline_actions
         self.byline_action_delim = byline_action_delim
         self.default_ansi        = default_ansi
-        self.header_alignment    = header_alignment
-        self.justify_char        = justify_char
         self.columns             = 100  # python 2 has limited support to discerning terminal width
 
         # TODO:
@@ -125,7 +123,7 @@ class DisplaySession:
         template = "{0:{fill}{align}" + str(width) + "}"  # hack for format string to get max
         return template.format(msg, fill=justify_char, align=self._map_align(align))
 
-    def header(self, msg, width=1, ansi=None, align=None, justify_char=None):
+    def header(self, msg, width=1, ansi=None, align="center", justify_char="_"):
         """
         User-facing method that aligns provided text, justifies with provided char, and accepts ANSI color-code.
         Defers to defaults if args not supplied.
@@ -139,8 +137,8 @@ class DisplaySession:
         :return: None - Prints fully justified and ANSI-color-coded string.
         """
         ansi         = ansi or self.default_ansi
-        align        = (align or self.header_alignment).lower()
-        justify_char = justify_char or self.justify_char
+        align        = align.lower()
+        justify_char = justify_char
         prepared_msg = self.color_msg(self._pad_msg(msg, align), ansi)
         width        = int(self.columns * width)
 
