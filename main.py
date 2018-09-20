@@ -11,6 +11,16 @@ class DisplaySession:
             header_alignment="center",
             justify_char="_",
     ):
+        """
+        Formats input strings using provided color, alignment, and byline arguments. Useful for making engaging CLIs.
+
+        :param byline             : String that will proceed every .print call.
+        :param byline_actions     : List of uncalled functions or methods to be called at every .print(). Possible values are datetime.now, psutil.cpu_pct, or other metrics.
+        :param byline_action_delim: Char that will seperate byline_actions.
+        :param default_ansi       : Default color scheme that only formats the byline and byline actions.
+        :param header_alignment   : Default header alignment - effects only .header calls.
+        :param justify_char       : Char used to justify text passed to .header call.
+        """
 
         self.byline              = byline
         self.byline_actions      = byline_actions
@@ -23,7 +33,6 @@ class DisplaySession:
 
         # TODO:
             # progress bars
-            # color maps
             # parallelize byline_actions
             # benchmark compared to regular print
 
