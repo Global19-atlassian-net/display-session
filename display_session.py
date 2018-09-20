@@ -1,6 +1,13 @@
 import shutil
 
 
+__title__ = "display-session"
+__version__ = "1.0"
+__author__ = "Nicholas Lawrence"
+__license__ = "MIT"
+__copyright__ = "Copyright 2018-2019 Nicholas Lawrence"
+
+
 class DisplaySession:
     def __init__(
             self,
@@ -33,7 +40,7 @@ class DisplaySession:
 
         # TODO:
             # progress bars
-            # parallelize byline_actions
+            # parallelize byline_actions - only in specific cases is this actually not detrimental
             # benchmark compared to regular print
 
     def _evaluate_terminal_width(self):
@@ -43,8 +50,8 @@ class DisplaySession:
         """
         self.columns, _ = shutil.get_terminal_size()
 
-    @classmethod
-    def show_color_palette(cls):
+    @staticmethod
+    def show_color_palette():
         """https://stackoverflow.com/questions/287871/print-in-terminal-with-colors/3332860"""
         for style in range(8):
             for fg in range(30, 38):
@@ -166,9 +173,10 @@ class DisplaySession:
 
         print(self.color_msg(msg, ansi))
 
-    def print(self, msg):
+    def report(self, msg):
         """
-        Prints input message alongside ANSI-color-coded byline.
+        Prints input message alongside ANSI-color-coded byline. If instantiation was provided functions or methods
+        they are called here.
 
         :param msg: Input string
 
