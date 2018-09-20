@@ -14,9 +14,7 @@ class DisplaySession:
             byline,
             byline_actions=[],
             byline_action_delim="//",
-            default_ansi="\033[36;40m",
-            header_alignment="center",
-            justify_char="_",
+            default_ansi="\033[36;40m"
     ):
         """
         Formats input strings using provided color, alignment, and byline arguments. Useful for making engaging CLIs.
@@ -25,8 +23,6 @@ class DisplaySession:
         :param byline_actions     : List of uncalled functions or methods to be called at every .print(). Possible values are datetime.now, psutil.cpu_pct, or other metrics.
         :param byline_action_delim: Char that will seperate byline_actions.
         :param default_ansi       : Default color scheme that only formats the byline and byline actions.
-        :param header_alignment   : Default header alignment - effects only .header calls.
-        :param justify_char       : Char used to justify text passed to .header call.
         :param columns            : Integer denoting width of the terminal.
         """
 
