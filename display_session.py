@@ -2,7 +2,7 @@ import shutil
 
 
 __title__ = "display-session"
-__version__ = "1.3"
+__version__ = "1.4"
 __author__ = "Nicholas Lawrence"
 __license__ = "MIT"
 __copyright__ = "Copyright 2018-2019 Nicholas Lawrence"
@@ -14,9 +14,7 @@ class DisplaySession:
             byline,
             byline_actions=[],
             byline_action_delim="//",
-            default_ansi="\033[36;40m",
-            header_alignment="center",
-            justify_char="_",
+            default_ansi="\033[36;40m"
     ):
         """
         Formats input strings using provided color, alignment, and byline arguments. Useful for making engaging CLIs.
@@ -25,8 +23,6 @@ class DisplaySession:
         :param byline_actions     : List of uncalled functions or methods to be called at every .print(). Possible values are datetime.now, psutil.cpu_pct, or other metrics.
         :param byline_action_delim: Char that will seperate byline_actions.
         :param default_ansi       : Default color scheme that only formats the byline and byline actions.
-        :param header_alignment   : Default header alignment - effects only .header calls.
-        :param justify_char       : Char used to justify text passed to .header call.
         :param columns            : Integer denoting width of the terminal.
         """
 
@@ -34,8 +30,6 @@ class DisplaySession:
         self.byline_actions      = byline_actions
         self.byline_action_delim = byline_action_delim
         self.default_ansi        = default_ansi
-        self.header_alignment    = header_alignment
-        self.justify_char        = justify_char
         self.columns             = 100  # python 2 has limited support to discerning terminal width
 
         # TODO:
@@ -125,7 +119,7 @@ class DisplaySession:
         template = "{0:{fill}{align}" + str(width) + "}"  # hack for format string to get max
         return template.format(msg, fill=justify_char, align=self._map_align(align))
 
-    def header(self, msg, width=1, ansi=None, align=None, justify_char=None):
+    def header(self, msg, width=1, ansi=None, align="center", justify_char="_"):
         """
         User-facing method that aligns provided text, justifies with provided char, and accepts ANSI color-code.
         Defers to defaults if args not supplied.
@@ -139,8 +133,8 @@ class DisplaySession:
         :return: None - Prints fully justified and ANSI-color-coded string.
         """
         ansi         = ansi or self.default_ansi
-        align        = (align or self.header_alignment).lower()
-        justify_char = justify_char or self.justify_char
+        align        = align.lower()
+        justify_char = justify_char
         prepared_msg = self.color_msg(self._pad_msg(msg, align), ansi)
         width        = int(self.columns * width)
 
