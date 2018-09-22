@@ -2,7 +2,7 @@ import shutil
 
 
 __title__ = "display-session"
-__version__ = "1.4"
+__version__ = "1.4.1"
 __author__ = "Nicholas Lawrence"
 __license__ = "MIT"
 __copyright__ = "Copyright 2018-2019 Nicholas Lawrence"
@@ -119,7 +119,7 @@ class DisplaySession:
         template = "{0:{fill}{align}" + str(width) + "}"  # hack for format string to get max
         return template.format(msg, fill=justify_char, align=self._map_align(align))
 
-    def header(self, msg, width=1, ansi=None, align="center", justify_char="_"):
+    def header(self, msg=None, width=1, ansi=None, align="center", justify_char="_"):
         """
         User-facing method that aligns provided text, justifies with provided char, and accepts ANSI color-code.
         Defers to defaults if args not supplied.
@@ -135,7 +135,7 @@ class DisplaySession:
         ansi         = ansi or self.default_ansi
         align        = align.lower()
         justify_char = justify_char
-        prepared_msg = self.color_msg(self._pad_msg(msg, align), ansi)
+        prepared_msg = self.color_msg(self._pad_msg(msg, align), ansi) if msg else justify_char
         width        = int(self.columns * width)
 
         justified_msg = self._align(msg=prepared_msg, width=width, align=align, justify_char=justify_char)
