@@ -2,7 +2,7 @@ import shutil
 
 
 __title__ = "display-session"
-__version__ = "1.4.1"
+__version__ = "1.4.2"
 __author__ = "Nicholas Lawrence"
 __license__ = "MIT"
 __copyright__ = "Copyright 2018-2019 Nicholas Lawrence"
@@ -10,11 +10,11 @@ __copyright__ = "Copyright 2018-2019 Nicholas Lawrence"
 
 class DisplaySession:
     def __init__(
-            self,
-            byline,
-            byline_actions=[],
-            byline_action_delim="//",
-            default_ansi="\033[36;40m"
+        self,
+        byline,
+        byline_actions=[],
+        byline_action_delim="//",
+        default_ansi="\033[36;40m",
     ):
         """
         Formats input strings using provided color, alignment, and byline arguments. Useful for making engaging CLIs.
@@ -26,26 +26,26 @@ class DisplaySession:
         :param columns            : Integer denoting width of the terminal.
         """
 
-        self.byline              = byline
-        self.byline_actions      = byline_actions
+        self.byline = byline
+        self.byline_actions = byline_actions
         self.byline_action_delim = byline_action_delim
-        self.default_ansi        = default_ansi
-        self.columns             = 100  # python 2 has limited support to discerning terminal width
+        self.default_ansi = default_ansi
+        self.columns = 100  # python 2 has limited support to discerning terminal width
 
         # TODO:
-            # progress bars
-            # parallelize byline_actions - only in specific cases is this actually not detrimental
-            # benchmark compared to regular print
+        # progress bars
+        # parallelize byline_actions - only in specific cases is this actually not detrimental
+        # benchmark compared to regular print
 
     @staticmethod
     def show_color_palette():
         """https://stackoverflow.com/questions/287871/print-in-terminal-with-colors/3332860"""
         for style in range(8):
             for fg in range(30, 38):
-                s1 = ''
+                s1 = ""
                 for bg in range(40, 48):
-                    fmt = ';'.join([str(style), str(fg), str(bg)])
-                    s1 += '\x1b[%sm %s \x1b[0m' % (fmt, fmt)
+                    fmt = ";".join([str(style), str(fg), str(bg)])
+                    s1 += "\x1b[%sm %s \x1b[0m" % (fmt, fmt)
                 print(s1)
 
     @staticmethod
@@ -71,10 +71,14 @@ class DisplaySession:
 
         :return: char denoting alignment for str.format method (<, >, ^)
         """
-        if align == "center" : return "^"
-        elif align == "left" : return "<"
-        elif align == "right": return ">"
-        else                 : raise ValueError("Entered string must be center, left, or right")
+        if align == "center":
+            return "^"
+        elif align == "left":
+            return "<"
+        elif align == "right":
+            return ">"
+        else:
+            raise ValueError("Entered string must be center, left, or right")
 
     @staticmethod
     def _pad_msg(msg, align="center"):
@@ -91,10 +95,14 @@ class DisplaySession:
         """
         msg = msg.lstrip().rstrip()
 
-        if align == "center" : return " " + msg + " "
-        elif align == "right": return " " + msg
-        elif align == "left" : return msg + " "
-        else                 : raise ValueError("Entered string must be center, left, or right")
+        if align == "center":
+            return " " + msg + " "
+        elif align == "right":
+            return " " + msg
+        elif align == "left":
+            return msg + " "
+        else:
+            raise ValueError("Entered string must be center, left, or right")
 
     def _align(self, msg, width, align, justify_char):
         """
@@ -116,7 +124,9 @@ class DisplaySession:
 
         :return: String of input text where remaining space is provided char. Orientation of char dependent on alignment.
         """
-        template = "{0:{fill}{align}" + str(width) + "}"  # hack for format string to get max
+        template = (
+            "{0:{fill}{align}" + str(width) + "}"
+        )  # hack for format string to get max
         return template.format(msg, fill=justify_char, align=self._map_align(align))
 
     def header(self, msg=None, width=1, ansi=None, align="center", justify_char="_"):
@@ -132,13 +142,17 @@ class DisplaySession:
 
         :return: None - Prints fully justified and ANSI-color-coded string.
         """
-        ansi         = ansi or self.default_ansi
-        align        = align.lower()
+        ansi = ansi or self.default_ansi
+        align = align.lower()
         justify_char = justify_char
-        prepared_msg = self.color_msg(self._pad_msg(msg, align), ansi) if msg else justify_char
-        width        = int(self.columns * width)
+        prepared_msg = (
+            self.color_msg(self._pad_msg(msg, align), ansi) if msg else justify_char
+        )
+        width = int(self.columns * width)
 
-        justified_msg = self._align(msg=prepared_msg, width=width, align=align, justify_char=justify_char)
+        justified_msg = self._align(
+            msg=prepared_msg, width=width, align=align, justify_char=justify_char
+        )
 
         print(justified_msg)
 
@@ -153,12 +167,24 @@ class DisplaySession:
 
         :return: None - prints ANSI-colored input string.
         """
-        if status == 1   : ansi = "\033[32m"  # green
-        elif status == 0 : ansi = "\033[34m"  # blue
-        elif status == -1: ansi = "\033[31m"  # red
-        else             : raise ValueError("Entered number must be -1, 0, or 1")
+        if status == 1:
+            ansi = "\033[32m"  # green
+        elif status == 0:
+            ansi = "\033[34m"  # blue
+        elif status == -1:
+            ansi = "\033[31m"  # red
+        else:
+            raise ValueError("Entered number must be -1, 0, or 1")
 
+        byline_text = self._construct_byline() + ":"
+        msg = " ".join([byline_text, str(msg)])
         print(self.color_msg(msg, ansi))
+
+    def _construct_byline(self):
+        byline_action = self._pad_msg(self.byline_action_delim).join(
+            [self._pad_msg(self.byline)] + [str(func()) for func in self.byline_actions]
+        )
+        return byline_action
 
     def report(self, msg):
         """
@@ -169,8 +195,6 @@ class DisplaySession:
 
         :return: None - Prints ANSI-color-coded byline with any provided functions.
         """
-        action_data = self._pad_msg(self.byline_action_delim).join(
-            [self._pad_msg(self.byline)] + [str(func()) for func in self.byline_actions]
-        )
-        byline = self.color_msg(action_data, self.default_ansi) + ":"
-        print(" ".join([byline, str(msg)]))
+        byline_text = self._construct_byline()
+        byline_full = self.color_msg(byline_text, self.default_ansi) + ":"
+        print(" ".join([byline_full, str(msg)]))
