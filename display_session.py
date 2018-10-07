@@ -1,8 +1,5 @@
-import shutil
-
-
 __title__ = "display-session"
-__version__ = "1.4.2"
+__version__ = "1.6.1"
 __author__ = "Nicholas Lawrence"
 __license__ = "MIT"
 __copyright__ = "Copyright 2018-2019 Nicholas Lawrence"
@@ -10,11 +7,11 @@ __copyright__ = "Copyright 2018-2019 Nicholas Lawrence"
 
 class DisplaySession:
     def __init__(
-        self,
-        byline,
-        byline_actions=[],
-        byline_action_delim="//",
-        default_ansi="\033[36;40m",
+            self,
+            byline="",
+            byline_actions=[],
+            byline_action_delim="//",
+            default_ansi="\033[37m",
     ):
         """
         Formats input strings using provided color, alignment, and byline arguments. Useful for making engaging CLIs.
@@ -49,7 +46,7 @@ class DisplaySession:
                 print(s1)
 
     @staticmethod
-    def color_msg(msg, color):
+    def color_text(text, color):
         """
         Encase input string with input ANSI color-code and ANSI color-reset-code.
 
@@ -58,7 +55,12 @@ class DisplaySession:
 
         :return: Input string wrapped with input ANSI color-code. Renders if printed.
         """
-        return color + msg + "\033[0m"
+        return color + text + "\033[0m"
+
+    def _color_msg(self, msg, ansi, color_all):
+        prepared_msg = ": " + msg
+        prepared_msg = self.color_text(prepared_msg, ansi) if color_all else prepared_msg
+        return prepared_msg
 
     @staticmethod
     def _map_align(align):
@@ -93,16 +95,21 @@ class DisplaySession:
 
         :return: Single space padded string dependent on provided alignment.
         """
-        msg = msg.lstrip().rstrip()
 
-        if align == "center":
-            return " " + msg + " "
-        elif align == "right":
-            return " " + msg
-        elif align == "left":
-            return msg + " "
+        if msg:
+            msg = msg.lstrip().rstrip()
+
+            if align == "center":
+                return " " + msg + " "
+            elif align == "right":
+                return " " + msg
+            elif align == "left":
+                return msg + " "
+            else:
+                raise ValueError("Entered string must be center, left, or right")
+
         else:
-            raise ValueError("Entered string must be center, left, or right")
+            return ""
 
     def _align(self, msg, width, align, justify_char):
         """
@@ -125,9 +132,19 @@ class DisplaySession:
         :return: String of input text where remaining space is provided char. Orientation of char dependent on alignment.
         """
         template = (
-            "{0:{fill}{align}" + str(width) + "}"
+                "{0:{fill}{align}" + str(width) + "}"
         )  # hack for format string to get max
         return template.format(msg, fill=justify_char, align=self._map_align(align))
+
+    def _construct_byline(self):
+        """
+        While I would prefer to keep the function calling as close to the return as possible, I found this to be the
+        cleanest way to assess if I needed to include a byline or not (which I don't for instances where ReprBylineMixin
+        is used).
+        """
+        actions = [str(func()) for func in self.byline_actions]
+        byline_with_actions = [self._pad_msg(self.byline, 'left')] + actions if self.byline else actions
+        return self._pad_msg(self.byline_action_delim).join(byline_with_actions)
 
     def header(self, msg=None, width=1, ansi=None, align="center", justify_char="_"):
         """
@@ -146,7 +163,7 @@ class DisplaySession:
         align = align.lower()
         justify_char = justify_char
         prepared_msg = (
-            self.color_msg(self._pad_msg(msg, align), ansi) if msg else justify_char
+            self.color_text(self._pad_msg(msg, align), ansi) if msg else justify_char
         )
         width = int(self.columns * width)
 
@@ -156,45 +173,43 @@ class DisplaySession:
 
         print(justified_msg)
 
-    def alert(self, msg, status=0):
-        """
-        Serves as easy way to print an input string with a good/neutral/bad sentiment.
-
-        :param msg   : Input string
-        :param status: Numeric flag that determines color of output message (1=good/green, 0=neutral/blue, -1=bad/red)
-
-        :raises: ValueError
-
-        :return: None - prints ANSI-colored input string.
-        """
-        if status == 1:
-            ansi = "\033[32m"  # green
-        elif status == 0:
-            ansi = "\033[34m"  # blue
-        elif status == -1:
-            ansi = "\033[31m"  # red
-        else:
-            raise ValueError("Entered number must be -1, 0, or 1")
-
-        byline_text = self._construct_byline() + ":"
-        msg = " ".join([byline_text, str(msg)])
-        print(self.color_msg(msg, ansi))
-
-    def _construct_byline(self):
-        byline_action = self._pad_msg(self.byline_action_delim).join(
-            [self._pad_msg(self.byline)] + [str(func()) for func in self.byline_actions]
-        )
-        return byline_action
-
-    def report(self, msg):
+    def report(self, msg, sentiment=None):
         """
         Prints input message alongside ANSI-color-coded byline. If instantiation was provided functions or methods
         they are called here.
 
         :param msg: Input string
-
+        :param sentiment: Indicates corresponding coloring. Default means message is not colored.
         :return: None - Prints ANSI-color-coded byline with any provided functions.
         """
-        byline_text = self._construct_byline()
-        byline_full = self.color_msg(byline_text, self.default_ansi) + ":"
-        print(" ".join([byline_full, str(msg)]))
+        color_all = True
+
+        if sentiment == None:
+            ansi = self.default_ansi
+            color_all = False
+        elif sentiment == 1:
+            ansi = "\033[32m"  # green
+        elif sentiment == 0:
+            ansi = "\033[34m"  # blue
+        elif sentiment == -1:
+            ansi = "\033[31m"  # red
+        else:
+            raise ValueError("If providing sentiment, entered number must be -1, 0, or 1")
+
+        msg = self._color_msg(msg=msg, ansi=ansi, color_all=color_all)
+        byline = self.color_text(self._construct_byline(), ansi)
+        print(byline + msg)
+
+
+class ReprBylineMixin:
+    """
+    This class serves as convenience mixin, so users can easily identify the source of alert or print statements,
+    so long as they define a good repr method. This exists because I found myself instantiating DisplaySessions for
+    every class where I wanted an update.
+    """
+
+    def __init__(self, **kwargs):
+        self.display_session = DisplaySession(byline_actions=[self.__repr__], **kwargs)
+
+    def report(self, msg, sentiment=None):
+        self.display_session.report(msg, sentiment)
