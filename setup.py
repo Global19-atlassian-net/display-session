@@ -27,7 +27,7 @@ setup(
     author=display_session.__author__,
     author_email="nickclawrence@gmail.com",
     py_modules=["display_session"],
-    install_requires=[],
+    install_requires=['colorama>=0.4.0'],
     classifiers=[
         "Intended Audience :: Developers",
         "Natural Language :: English",
