@@ -46,7 +46,7 @@ class Display:
         return []
 
     def report(self, msg, style=None, byline_module_style=None):
-        byline = self.__repr__()
+        byline = repr(self)
         modules = self.byline_colored_modules()
 
         if modules:
