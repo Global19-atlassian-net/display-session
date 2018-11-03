@@ -1,7 +1,7 @@
 import colorama.ansi as ca
 
 __title__ = "display-session"
-__version__ = "2.0.0"
+__version__ = "2.0.1"
 __author__ = "Nicholas Lawrence"
 __license__ = "MIT"
 __copyright__ = "Copyright 2018-2019 Nicholas Lawrence"
